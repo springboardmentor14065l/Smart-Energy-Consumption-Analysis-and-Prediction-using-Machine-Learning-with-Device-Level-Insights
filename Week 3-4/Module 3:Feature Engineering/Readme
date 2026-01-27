@@ -1,1 +1,6 @@
 
+Module 3: Feature Engineering 
+   • Extract relevant time-based features (hour, day, week, month trends). 
+   • Aggregate device-level consumption statistics. 
+   • Create lag features and moving averages for time series learning. 
+   • Prepare final feature set for ML model input.
