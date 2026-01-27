@@ -1,0 +1,11 @@
+Milestone 2: Week 3-4  
+  Module 3: Feature Engineering 
+    • Extract relevant time-based features (hour, day, week, month trends). 
+    • Aggregate device-level consumption statistics. 
+    • Create lag features and moving averages for time series learning. 
+    • Prepare final feature set for ML model input. 
+  Module 4: Baseline Model Development 
+    • Implement Linear Regression as baseline forecasting model. 
+    • Train and evaluate baseline using MAE, RMSE metrics. 
+    • Plot actual vs predicted energy usage. 
+    • Use baseline model for model comparison. 
