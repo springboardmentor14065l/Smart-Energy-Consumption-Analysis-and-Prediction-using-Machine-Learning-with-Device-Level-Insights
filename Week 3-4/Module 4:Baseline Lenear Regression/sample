@@ -1,1 +1,6 @@
-
+Readme
+  Module 4: Baseline Model Development 
+    • Implement Linear Regression as baseline forecasting model. 
+    • Train and evaluate baseline using MAE, RMSE metrics. 
+    • Plot actual vs predicted energy usage. 
+    • Use baseline model for model comparison.
