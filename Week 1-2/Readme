@@ -1,1 +1,11 @@
 
+Module 1: Data Collection and Understanding  
+  • Define project scope and functional objectives for smart energy analysis. 
+  • Collect and structure the SmartHome Energy Monitoring Dataset. 
+  • Verify data integrity, handle missing timestamps, and perform exploratory analysis. 
+  • Organize energy readings by device, room, and timestamp. 
+Module 2: Data Cleaning and Preprocessing   
+  • Handle missing values and outliers in power consumption readings. 
+  • Convert timestamps to datetime format and resample data (hourly/daily). 
+  • Normalize or scale energy values for model compatibility. 
+  • Split dataset into training, validation, and testing sets. 
