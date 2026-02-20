@@ -1,11 +1,6 @@
 /* ══════════════════════════════════════════════
-   SmartWatt Dashboard — script.js
-   Place in: static/script.js
-══════════════════════════════════════════════ */
+    Dashboard — script.js
 
-// ══════════════════════════════════════════════
-// STATE
-// ══════════════════════════════════════════════
 let overallChart, deviceChart, pieChart;
 let applianceList        = [];
 let deviceStats          = {};   // { device: { mean, std } }
