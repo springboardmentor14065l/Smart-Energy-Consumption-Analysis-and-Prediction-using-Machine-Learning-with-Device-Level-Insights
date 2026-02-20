@@ -1,0 +1,67 @@
+body {
+    font-family: Arial, sans-serif;
+    background: #0f172a;
+    color: white;
+    text-align: center;
+    padding: 40px;
+}
+
+h1 {
+    margin-bottom: 30px;
+}
+
+.card {
+    background: #1e293b;
+    padding: 25px;
+    margin: 20px auto;
+    border-radius: 12px;
+    width: 80%;
+    max-width: 600px;
+}
+
+select, button {
+    padding: 10px;
+    font-size: 16px;
+    margin-top: 10px;
+    border-radius: 6px;
+    border: none;
+}
+
+button {
+    background: #38bdf8;
+    color: white;
+    cursor: pointer;
+}
+
+button:hover {
+    background: #0284c7;
+}
+
+ul {
+    list-style: none;
+    padding-left: 0;
+}
+
+li {
+    margin: 8px 0;
+}
+
+canvas {
+    margin-top: 20px;
+}
+/* 🔥 Make Graph Cards Smaller */
+
+.card canvas {
+    width: 100% !important;
+    height: 250px !important;   /* control graph height here */
+}
+
+/* Make graph cards slightly wider but compact */
+.card {
+    max-width: 800px;
+}
+
+/* Optional: add spacing between graph cards */
+.card {
+    margin-bottom: 25px;
+}

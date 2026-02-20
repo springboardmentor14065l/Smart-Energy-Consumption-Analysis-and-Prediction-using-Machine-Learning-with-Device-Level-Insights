@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Smart Energy Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+<h1>⚡ Smart Energy Dashboard</h1>
+
+<div class="card">
+    <label>Select Appliance:</label>
+    <select id="appliance">
+        <option>Fridge</option>
+        <option>Air Conditioning</option>
+        <option>Washing Machine</option>
+        <option>Microwave</option>
+        <option>Heater</option>
+        <option>Lights</option>
+        <option>TV</option>
+        <option>Computer</option>
+        <option>Oven</option>
+        <option>Dishwasher</option>
+    </select>
+    <button onclick="getPrediction()">Predict</button>
+    <h2 id="result"></h2>
+</div>
+
+<div class="card">
+    <h2>Smart Suggestions</h2>
+    <ul id="suggestionList"></ul>
+</div>
+
+<div class="card">
+    <h2>Consumption Summary</h2>
+    <p>Last 24 Hours: <span id="histHour"></span> kWh</p>
+    <p>Last 7 Days: <span id="histWeek"></span> kWh</p>
+    <p>Last 30 Days: <span id="histMonth"></span> kWh</p>
+</div>
+
+<div class="card">
+    <h2>Hourly Consumption</h2>
+    <canvas id="hourlyChart"></canvas>
+</div>
+
+<div class="card">
+    <h2>Daily Consumption</h2>
+    <canvas id="dailyChart"></canvas>
+</div>
+
+<div class="card">
+    <h2>Weekly Consumption</h2>
+    <canvas id="weeklyChart"></canvas>
+</div>
+
+<div class="card">
+    <h2>Monthly Consumption</h2>
+    <canvas id="monthlyChart"></canvas>
+</div>
+
+<div class="card">
+    <h2>Model Performance Comparison</h2>
+    <p>Linear Regression MAE: <span id="lrMae">--</span></p>
+    <p>LSTM MAE: <span id="lstmMae">--</span></p>
+    <p><strong>Best Model: <span id="bestModel">--</span></strong></p>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
