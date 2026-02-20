@@ -212,24 +212,23 @@ A complete, deployable, and demo-ready ML system with backend, UI, and documenta
 - Clean commit history with week-wise messages  
 
 ### Repository Structure
-
-Project-Repository/
-├── Week-1-2/
-├── Week-3-4/
-├── Week-5-6/
-│   ├── LSTM_Model.ipynb
-│   ├── lstm_models/
-│   └── README.md
-├── Week-7-8/
-│   ├── flask_app/
-│   ├── dashboard_notebook.ipynb
-│   └── README.md
-├── documents/
-│   ├── Week-1-2.md
-│   ├── Week-3-4.md
-│   ├── Week-5-6.md
-│   └── Week-7-8.md
-└── README.md
+-Project-Repository/
+-├── Week-1-2/
+-├── Week-3-4/
+-├── Week-5-6/
+-│   ├── LSTM_Model.ipynb
+-│   ├── lstm_models/
+-│   └── README.md
+-├── Week-7-8/
+-│   ├── flask_app/
+-│   ├── dashboard_notebook.ipynb
+-│   └── README.md
+-├── documents/
+-│   ├── Week-1-2.md
+-│   ├── Week-3-4.md
+-│   ├── Week-5-6.md
+-│   └── Week-7-8.md
+-└── README.md
 
 ---
 
