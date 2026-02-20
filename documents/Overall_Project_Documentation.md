@@ -213,7 +213,6 @@ A complete, deployable, and demo-ready ML system with backend, UI, and documenta
 
 
 ### Repository Structure
-
 ```text
 Project-Repository/
 ├── Week-1-2/
@@ -232,9 +231,8 @@ Project-Repository/
 │   ├── Week-5-6.md
 │   └── Week-7-8.md
 └── README.md
-```8.md
 -└── README.md
-
+```
 ---
 
 ## Project Status
