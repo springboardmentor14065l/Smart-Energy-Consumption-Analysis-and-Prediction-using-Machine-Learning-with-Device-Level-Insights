@@ -1,0 +1,66 @@
+1. PROJECT OVERVIEW
+
+
+Dahboard is a Flask-based web dashboard that monitors smart
+home energy consumption and predicts next-hour usage per
+appliance using LSTM neural networks.
+
+Tech Stack:
+  - Backend     : Python + Flask
+  - ML Models   : TensorFlow / LSTM
+  - Data        : Pandas + NumPy
+  - Frontend    : HTML + CSS + JavaScript
+  - Charts      : Chart.js
+
+Dataset: smart_home_time.csv
+  Columns: timestamp, Appliance Type, Energy Consumption (kWh)
+
+
+
+2. APPLIANCES MONITORED (10 devices)
+
+
+  1. Air Conditioning
+  2. Computer
+  3. Dishwasher
+  4. Fridge
+  5. Heater
+  6. Microwave
+  7. Oven
+  8. TV
+  9. Washing Machine
+  10.Lights
+
+Each device has its own LSTM model (lstm_{device}.h5)
+and scaler (scaler_{device}.pkl) stored in models/
+
+
+3. API ENDPOINTS
+
+
+  GET  /                    Serves the dashboard
+  GET  /api/appliances      List of all devices
+  GET  /api/overall         Total energy trend (hourly/daily/monthly)
+  GET  /api/device          Single device trend
+  GET  /api/device_totals   Historical kWh totals per device
+  GET  /api/device_stats    Mean + std deviation per device
+  GET  /api/predict_all     LSTM forecast for all devices
+  POST /api/predict         LSTM forecast for one device
+  GET  /api/insights        Highest and lowest consuming device
+
+4. DASHBOARD PAGES
+
+
+  Dashboard   - Stat cards, trend chart, device share pie
+  Devices     - Per-device chart, consumption ranking table
+  Predictions - Single + all-device LSTM forecasts with levels
+  Insights    - Top consumer + 4 energy saving tips
+
+5. KNOWN LIMITATIONS
+
+
+  - LSTM predictions tend toward the historical mean
+    so Moderate classifications are most common
+  - No live data — runs on static CSV only
+  - Model retraining is manual
+  - No user authentication
