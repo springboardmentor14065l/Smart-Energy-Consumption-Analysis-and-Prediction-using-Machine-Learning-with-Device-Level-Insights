@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Smart Dashboard — Energy Dashboard</title>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}"/>
+</head>
+<body>
+
+<aside class="sidebar">
+  <div class="logo">SmartDashboard</div>
+  <div class="tagline">Energy Intelligence</div>
+  <div class="nav-label">Overview</div>
+  <div class="nav-item active" onclick="showPage('dashboard', this)"><span class="nav-icon">⚡</span> Dashboard</div>
+  <div class="nav-item" onclick="showPage('devices', this)"><span class="nav-icon">📟</span> Devices</div>
+  <div class="nav-label" style="margin-top:20px">AI Features</div>
+  <div class="nav-item" onclick="showPage('predict', this)"><span class="nav-icon">🔮</span> Predictions</div>
+  <div class="nav-item" onclick="showPage('insights', this)"><span class="nav-icon">💡</span> Insights</div>
+  <div class="sidebar-footer">
+    <p><span class="status-dot"></span>Live data active</p>
+    <p style="margin-top:6px; font-size:11px;">Models: LSTM per device</p>
+  </div>
+</aside>
+
+<main class="main">
+
+  <!-- PAGE: DASHBOARD -->
+  <div class="page active" id="page-dashboard">
+    <div class="topbar">
+      <div class="page-title">Energy <span>Overview</span></div>
+      <div class="period-toggle">
+        <button class="period-btn" onclick="switchPeriod('hourly', this)">Hourly</button>
+        <button class="period-btn active" onclick="switchPeriod('daily', this)">Daily</button>
+        <button class="period-btn" onclick="switchPeriod('monthly', this)">Monthly</button>
+      </div>
+    </div>
+    <div class="stat-grid">
+      <div class="stat-card blue">
+        <div class="stat-label">Total Consumption</div>
+        <div class="stat-value blue" id="stat-total">—</div>
+        <div class="stat-sub">kWh across all devices</div>
+      </div>
+      <div class="stat-card green">
+        <div class="stat-label">Most Efficient</div>
+        <div class="stat-value green" id="stat-low" style="font-size:15px;line-height:1.6">—</div>
+        <div class="stat-sub">Lowest consumer</div>
+      </div>
+      <div class="stat-card orange">
+        <div class="stat-label">Highest Usage</div>
+        <div class="stat-value orange" id="stat-high" style="font-size:15px;line-height:1.6">—</div>
+        <div class="stat-sub">Top consumer</div>
+      </div>
+      <div class="stat-card purple">
+        <div class="stat-label">Active Devices</div>
+        <div class="stat-value purple" id="stat-devices">—</div>
+        <div class="stat-sub">Appliances monitored</div>
+      </div>
+    </div>
+    <div class="chart-grid">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">// TOTAL CONSUMPTION TREND</div>
+          <span class="card-badge badge-blue" id="period-badge">Daily</span>
+        </div>
+        <div class="chart-wrap"><canvas id="overallChart"></canvas></div>
+      </div>
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">// ACTUAL DEVICE SHARE</div>
+          <span class="card-badge badge-green">Historical</span>
+        </div>
+        <div class="chart-wrap"><canvas id="pieChart"></canvas></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PAGE: DEVICES -->
+  <div class="page" id="page-devices">
+    <div class="topbar">
+      <div class="page-title">Device <span>Analysis</span></div>
+      <div class="controls">
+        <select id="device-select"></select>
+        <div class="period-toggle">
+          <button class="period-btn" onclick="switchDevicePeriod('hourly', this)">Hourly</button>
+          <button class="period-btn active" onclick="switchDevicePeriod('daily', this)">Daily</button>
+          <button class="period-btn" onclick="switchDevicePeriod('monthly', this)">Monthly</button>
+        </div>
+        <button class="primary" onclick="loadDevice()">Load</button>
+      </div>
+    </div>
+    <div class="device-row">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title" id="device-chart-title">// SELECT A DEVICE</div>
+          <span class="card-badge badge-green">Historical</span>
+        </div>
+        <div class="chart-wrap"><canvas id="deviceChart"></canvas></div>
+      </div>
+      <div class="card">
+        <div class="card-header"><div class="card-title">// CONSUMPTION RANKING</div></div>
+        <div id="ranking-table">
+          <div class="loading" style="height:200px"><div class="spinner"></div> Loading…</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PAGE: PREDICTIONS -->
+  <div class="page" id="page-predict">
+    <div class="topbar">
+      <div class="page-title">AI <span>Predictions</span></div>
+      <div class="controls">
+        <select id="pred-device-select"></select>
+        <button class="primary" onclick="runSinglePredict()">▶ Predict Next Hour</button>
+      </div>
+    </div>
+    
+    <div class="predict-section">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">// SINGLE DEVICE FORECAST</div>
+          <span class="card-badge badge-blue">LSTM Model</span>
+        </div>
+        <div style="padding:30px 0; text-align:center" id="single-pred-result">
+          <p style="color:var(--muted); font-size:13px">Select a device and click Predict</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">// ALL DEVICES FORECAST</div>
+          <button class="primary" onclick="predictAllTable()" style="font-size:12px;padding:6px 12px">Run All</button>
+        </div>
+        <div id="all-pred-table">
+          <div class="loading" style="height:200px"><div class="spinner"></div> Click Run All to start</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PAGE: INSIGHTS -->
+  <div class="page" id="page-insights">
+    <div class="topbar">
+      <div class="page-title">Energy <span>Insights</span></div>
+    </div>
+    <div class="insight-bar" id="insight-main">
+      <div class="loading"><div class="spinner"></div> Loading…</div>
+    </div>
+    <div class="card">
+      <div class="card-header"><div class="card-title">// SAVINGS RECOMMENDATIONS</div></div>
+      <div id="tips-section">
+        <div class="loading" style="height:120px"><div class="spinner"></div></div>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<!-- JS loaded at bottom so DOM is ready before script runs -->
+<script src="{{ url_for('static', filename='script.js') }}"></script>
+
+</body>
+</html>
