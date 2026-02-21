@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>AI Smart Energy Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+<div class="container">
+
+<div class="frame">
+    <h2>⚡ Live Monitor</h2>
+    <div class="card">
+        <h3>Current Usage</h3>
+        <h1>{{ current_usage }} kWh</h1>
+        <p>₹ {{ current_cost }}</p>
+    </div>
+    <div class="card">
+        <h3>Next Hour Prediction</h3>
+        <h1>{{ next_hour_pred }} kWh</h1>
+        <p>₹ {{ predicted_cost }}</p>
+    </div>
+</div>
+
+<div class="frame">
+    <h2>📈 Energy Trend</h2>
+    <canvas id="trendChart"></canvas>
+</div>
+
+<div class="frame">
+    <h2>🔍 Device Analysis</h2>
+    <canvas id="deviceChart"></canvas>
+</div>
+
+<div class="frame">
+    <h2>💰 Monthly Bill Predictor</h2>
+    <div class="card">
+        <h3>Current Month Bill</h3>
+        <h1>₹ {{ current_bill }}</h1>
+    </div>
+
+    <form method="POST">
+        {% for device in devices %}
+            <input type="checkbox" name="devices" value="{{ device }}" checked>
+            {{ device }} <br>
+        {% endfor %}
+        <br>
+        <button type="submit">Predict Next Month Bill</button>
+    </form>
+
+    {% if predicted_month_bill %}
+    <div class="card">
+        <h3>Predicted Next Month Bill</h3>
+        <h1>₹ {{ predicted_month_bill }}</h1>
+    </div>
+    {% endif %}
+</div>
+
+<div class="frame">
+    <h2>🧠 Smart Suggestions</h2>
+    {% for suggestion in suggestions %}
+        <div class="card">{{ suggestion }}</div>
+    {% endfor %}
+</div>
+
+
+   
+</div>
+
+</div>
+
+<script>
+const trendData = {{ trend | tojson }};
+const deviceLabels = {{ devices | tojson }};
+const deviceValues = {{ values | tojson }};
+
+new Chart(document.getElementById('trendChart'), {
+    type: 'line',
+    data: { labels: trendData.map((_, i) => i),
+        datasets: [{ data: trendData, borderColor: "#00ffcc", tension: 0.4 }]
+    },
+    options: { plugins:{legend:{display:false}}, scales:{x:{display:false}} }
+});
+
+new Chart(document.getElementById('deviceChart'), {
+    type: 'bar',
+    data: { labels: deviceLabels,
+        datasets: [{ data: deviceValues, backgroundColor: "#ff4d4d" }]
+    },
+    options: { plugins:{legend:{display:false}} }
+});
+</script>
+
+</body>
+</html>
