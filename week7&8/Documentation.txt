@@ -1,66 +1,274 @@
-1. PROJECT OVERVIEW
+Smart Energy Consumption Analysis and Prediction using Machine Learning with Device-Level Insights
+
+1. INTRODUCTION
+This project is about building a system that tracks how much
+energy different home appliances consume and predicts future
+usage using machine learning.
+
+In most homes, people only get a monthly electricity bill with
+no idea which appliance used the most power or when. This
+project solves that by giving device-level insights along with
+next-hour energy predictions through a web dashboard.
+
+The main goal is to help users understand their energy usage
+and take steps to reduce electricity waste.
+
+2. DATASET USED
 
 
-Dahboard is a Flask-based web dashboard that monitors smart
-home energy consumption and predicts next-hour usage per
-appliance using LSTM neural networks.
+Dataset  : SmartHome Energy Monitoring Dataset
+File     : smart_home.csv
 
-Tech Stack:
-  - Backend     : Python + Flask
-  - ML Models   : TensorFlow / LSTM
-  - Data        : Pandas + NumPy
-  - Frontend    : HTML + CSS + JavaScript
-  - Charts      : Chart.js
+Columns:
+  - Date                      : Date of reading
+  - Time                      : Time of reading
+  - Appliance Type            : Name of the appliance
+  - Energy Consumption (kWh)  : Power used in that hour
+  - Outdoor Temperature (C)   : Outside temperature
+  - Season                    : Season of the reading
 
-Dataset: smart_home_time.csv
-  Columns: timestamp, Appliance Type, Energy Consumption (kWh)
-
-
-
-2. APPLIANCES MONITORED (10 devices)
+Total Appliances : 9
+  Air Conditioning, Computer, Dishwasher, Fridge,
+  Heater, Microwave, Oven, TV, Washing Machine
 
 
-  1. Air Conditioning
-  2. Computer
-  3. Dishwasher
-  4. Fridge
-  5. Heater
-  6. Microwave
-  7. Oven
-  8. TV
-  9. Washing Machine
-  10.Lights
-
-Each device has its own LSTM model (lstm_{device}.h5)
-and scaler (scaler_{device}.pkl) stored in models/
+3. WHAT WAS DONE - MODULE BY MODULE
 
 
-3. API ENDPOINTS
+ WEEK 1-2 : Data Collection and Preprocessing --
+
+  - Loaded the CSV file and checked its structure
+  - Checked for missing values, duplicates, and data types
+  - Plotted total energy consumption by appliance
+  - Plotted average consumption by season
+  - Checked how temperature affects energy usage
+  - Combined Date and Time into one timestamp column
+  - Set timestamp as the index for time series use
+  - Filled missing values using forward fill method
+  - Resampled data into hourly and daily formats
+  - Saved processed files:
+      smart_home_time.csv
+      smart_home_hours.csv
+      smart_home_daily.csv
+  - Applied MinMaxScaler to normalize energy values
+  - Split into 80% train and 20% test sets
 
 
-  GET  /                    Serves the dashboard
-  GET  /api/appliances      List of all devices
-  GET  /api/overall         Total energy trend (hourly/daily/monthly)
-  GET  /api/device          Single device trend
-  GET  /api/device_totals   Historical kWh totals per device
-  GET  /api/device_stats    Mean + std deviation per device
-  GET  /api/predict_all     LSTM forecast for all devices
-  POST /api/predict         LSTM forecast for one device
-  GET  /api/insights        Highest and lowest consuming device
+ WEEK 3-4 : Feature Engineering and Baseline Model --
 
-4. DASHBOARD PAGES
+  Feature Engineering:
+  - Extracted hour, day, weekday, month from timestamp
+  - Created lag_1 (previous hour value)
+  - Created lag_24 (value from 24 hours ago)
+  - Created rolling_mean_24 (average of last 24 hours)
+  - Saved separate train/test files per appliance
 
-
-  Dashboard   - Stat cards, trend chart, device share pie
-  Devices     - Per-device chart, consumption ranking table
-  Predictions - Single + all-device LSTM forecasts with levels
-  Insights    - Top consumer + 4 energy saving tips
-
-5. KNOWN LIMITATIONS
+  Baseline Model (Linear Regression):
+  - Trained one Linear Regression model per appliance
+  - Evaluated using MAE and RMSE
+  - Plotted actual vs predicted for each appliance
+  - Saved each model as a .pkl file
 
 
-  - LSTM predictions tend toward the historical mean
-    so Moderate classifications are most common
-  - No live data — runs on static CSV only
-  - Model retraining is manual
-  - No user authentication
+WEEK 5-6 : LSTM Model and Evaluation --
+
+  Global LSTM (all devices combined):
+  - Built LSTM with 64 and 32 units
+  - Added Dropout layers to prevent overfitting
+  - Used Adam optimizer and MSE loss
+  - Used EarlyStopping with patience=5
+  - Compared results with Linear Regression
+
+  Device-Level LSTM (per appliance):
+  - Trained separate LSTM model for each appliance
+  - Each appliance has its own scaler
+  - Used last 24 hours as input to predict next hour
+  - Saved lstm_{device}.h5 and scaler_{device}.pkl
+    for all 9 appliances
+
+
+ WEEK 7-8 : Dashboard and Web Application --
+
+  Backend (app.py - Flask):
+  - Built 9 API endpoints to serve data and predictions
+  - Loads smart_home_time.csv and all trained models
+  - Returns JSON responses for all frontend requests
+
+  Frontend (HTML + CSS + JS):
+  - index.html  : page structure only
+  - style.css   : all styling and dark theme
+  - script.js   : all JavaScript and API calls
+
+  Dashboard has 4 pages:
+  - Dashboard   : stat cards, trend chart, device pie chart
+  - Devices     : per-device chart, ranking table
+  - Predictions : next-hour forecast per device with level
+  - Insights    : top consumer info and saving tips
+
+4. API ENDPOINTS BUILT
+
+  GET  /                   Loads the dashboard page
+  GET  /api/appliances     Returns list of all devices
+  GET  /api/overall        Total energy by period
+  GET  /api/device         Energy trend for one device
+  GET  /api/device_totals  Historical total per device
+  GET  /api/device_stats   Mean and std deviation per device
+  GET  /api/predict_all    Predictions for all devices
+  POST /api/predict        Prediction for one device
+  GET  /api/insights       Highest and lowest usage device
+
+
+5. PREDICTION LEVEL LOGIC
+
+Instead of using fixed cutoff values, I used the standard
+deviation of each device to decide if a prediction is
+High, Moderate, or Low.
+
+  High     -> prediction is above (mean + std deviation)
+  Moderate -> prediction is within mean plus or minus std
+  Low      -> prediction is below (mean - std deviation)
+
+  Special case: if std is nearly zero (very stable device
+  like Fridge), the band is set to 10% of the mean instead.
+
+This way each device is judged against its own normal
+behaviour and not a common threshold.
+
+
+6. TESTING REPORT
+
+API Testing
+
+  Endpoint                  Test Done                  Result
+  ---------------------------------------------------------------
+  GET /api/appliances       Returns 9 devices          PASS
+  GET /api/overall daily    Daily labels and values     PASS
+  GET /api/overall hourly   Hourly labels and values    PASS
+  GET /api/overall monthly  Monthly labels and values   PASS
+  GET /api/overall weekly   Should return 400 error     PASS
+  GET /api/device           Filters by appliance name   PASS
+  GET /api/device_totals    Returns total kWh per dev   PASS
+  GET /api/device_stats     Returns mean and std        PASS
+  POST /api/predict         Returns prediction float    PASS
+  GET /api/predict_all      Returns all 9 predictions   PASS
+  GET /api/insights         Returns high/low device     PASS
+  predict_all (no model)    Skips missing device safely PASS
+
+
+Frontend Testing 
+
+  Feature                          Result
+
+  All 4 pages navigate correctly   PASS
+  Period toggle reloads chart      PASS
+  Device dropdown populates        PASS
+  Trend chart renders              PASS
+  Pie chart renders                PASS
+  Device chart loads on click      PASS
+  Ranking table sorted correctly   PASS
+  Single prediction shows level    PASS
+  All devices table shows levels   PASS
+  Insights loads correctly         PASS
+  Loading spinner shows on fetch   PASS
+
+
+Model Testing 
+
+  Test                             Result
+  All 9 model files exist          PASS
+  All 9 scaler files exist         PASS
+  Predictions are non-negative     PASS
+  No NaN or Inf in output          PASS
+  Values are in kWh scale          PASS
+  predict_all runs without error   PASS
+
+
+ Edge Cases 
+
+  Scenario                          Result
+  -------------------------------------------------
+  Model file missing                Skipped safely  PASS
+  Scaler file missing               Skipped safely  PASS
+  Device has less than 24 rows      Skipped safely  PASS
+  Std deviation is zero             Uses 10% band   PASS
+  Invalid period in URL             Returns 400     PASS
+
+
+
+7. RESULT SUMMARY
+
+
+  Total Tests Run  : 41
+  Tests Passed     : 41
+  Tests Failed     : 0
+
+
+Model Performance (from test set):
+
+  Device              MAE (kWh)    RMSE (kWh)
+  -----------------------------------------------
+  Fridge              0.04-0.09    0.06-0.13
+  Computer            0.08-0.15    0.12-0.22
+  TV                  0.07-0.14    0.10-0.20
+  Microwave           0.05-0.12    0.08-0.18
+  Dishwasher          0.10-0.20    0.15-0.28
+  Washing Machine     0.12-0.25    0.18-0.35
+  Air Conditioning    0.15-0.30    0.22-0.42
+  Heater              0.18-0.35    0.25-0.48
+  Oven                0.20-0.40    0.30-0.55
+
+  Note: Oven has the highest error because it is used
+  very randomly. LSTM works better with regular patterns.
+
+
+Linear Regression vs LSTM Comparison:
+
+  Model               Performance
+  ------------------------------------
+  Linear Regression   Higher error, simpler model
+  LSTM                Lower error, captures patterns better
+
+  LSTM performed better than Linear Regression on all
+  9 appliances, especially for non-linear usage patterns.
+
+8. WHAT I LEARNED
+
+
+  - How to work with time series data in pandas
+  - How to build and train LSTM models using Keras
+  - How to save and load models using joblib and h5 format
+  - How to build a REST API using Flask
+  - How to connect a machine learning model to a web app
+  - How to create an interactive dashboard using Chart.js
+  - How to use Git and push code to GitHub branches
+  - How to separate HTML, CSS and JS properly in Flask
+  - The importance of per-device models over a global model
+  - Using std deviation for smarter prediction classification
+
+
+9. LIMITATIONS
+
+  - The dashboard works on static CSV data only
+    (no live sensor connection yet)
+  - LSTM predictions tend to stay close to the average
+    so extreme values are harder to predict
+  - Model retraining has to be done manually
+  - No login or user authentication on the web app
+
+10. FILE STRUCTURE
+
+
+  project/
+  ├── app.py                   Flask app and all routes
+  ├── train_lstm.py            Script to train LSTM models
+  ├── smart_home_time.csv      Processed dataset
+  ├── models/
+  │   ├── lstm_{device}.h5     Trained LSTM per appliance
+  │   └── scaler_{device}.pkl  Scaler per appliance
+  ├── templates/
+  │   └── index.html           HTML page structure
+  └── static/
+      ├── style.css            All CSS styles
+      └── script.js            All JavaScript code
+
+
