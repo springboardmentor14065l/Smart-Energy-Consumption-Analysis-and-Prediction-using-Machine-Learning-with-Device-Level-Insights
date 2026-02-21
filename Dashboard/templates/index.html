@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Energy Consumption Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}" />
+  </head>
+  <body>
+    <div class="page">
+      <header class="header">
+        <h1>Energy Consumption Dashboard</h1>
+        <p class="sub">With Hourly / Daily / Weekly / Monthly consumption, device-wise charts, and smart suggestions.</p>
+      </header>
+
+      <section class="cards" aria-label="Summary cards">
+        <div class="card">
+          <div class="card-title">Hourly (Latest)</div>
+          <div class="card-value" id="sum-hourly">—</div>
+          <div class="card-sub" id="avg-hourly">—</div>
+        </div>
+        <div class="card">
+          <div class="card-title">Daily (Latest)</div>
+          <div class="card-value" id="sum-daily">—</div>
+          <div class="card-sub" id="avg-daily">—</div>
+        </div>
+        <div class="card">
+          <div class="card-title">Weekly (Latest)</div>
+          <div class="card-value" id="sum-weekly">—</div>
+          <div class="card-sub" id="avg-weekly">—</div>
+        </div>
+        <div class="card">
+          <div class="card-title">Monthly (Latest)</div>
+          <div class="card-value" id="sum-monthly">—</div>
+          <div class="card-sub" id="avg-monthly">—</div>
+        </div>
+      </section>
+
+      <section class="panel" aria-label="Overall consumption">
+        <div class="panel-head">
+          <h2>Overall Consumption</h2>
+          <label class="field">
+            <span>Period</span>
+            <select id="overall-period">
+              <option value="hourly">Hourly</option>
+              <option value="daily" selected>Daily</option>
+              <option value="weekly">Weekly</option>
+              <option value="monthly">Monthly</option>
+            </select>
+          </label>
+        </div>
+        <div class="panel-body">
+          <img id="overall-chart" alt="Overall consumption chart" />
+        </div>
+      </section>
+
+      <section class="panel" aria-label="Device-wise usage">
+        <div class="panel-head">
+          <h2>Device-wise Usage</h2>
+          <label class="field">
+            <span>Period</span>
+            <select id="device-period">
+              <option value="hourly">Hourly</option>
+              <option value="daily">Daily</option>
+              <option value="weekly">Weekly</option>
+              <option value="monthly" selected>Monthly</option>
+            </select>
+          </label>
+        </div>
+        <div class="panel-body">
+          <img id="device-chart" alt="Device-wise usage chart" />
+        </div>
+      </section>
+
+      <section class="panel" aria-label="Smart suggestions">
+        <div class="panel-head">
+          <h2>Smart Suggestions</h2>
+          <div class="row">
+            <label class="field grow">
+              <span>Appliance</span>
+              <select id="suggest-appliance"></select>
+            </label>
+            <label class="field">
+              <span>Period</span>
+              <select id="suggest-period">
+                <option value="hourly">Hourly</option>
+                <option value="daily">Daily</option>
+                <option value="weekly">Weekly</option>
+                <option value="monthly" selected>Monthly</option>
+              </select>
+            </label>
+            <button id="suggest-refresh" class="btn" type="button">Get Tips</button>
+          </div>
+        </div>
+        <div class="panel-body">
+          <ul id="tips" class="tips"></ul>
+        </div>
+      </section>
+
+      <section class="panel" aria-label="Model prediction">
+        <div class="panel-head">
+          <h2>ML Model Prediction</h2>
+          <div class="row">
+            <label class="field grow">
+              <span>Appliance</span>
+              <select id="pred-appliance"></select>
+            </label>
+            <label class="field">
+              <span>Home ID (optional)</span>
+              <input id="pred-home" type="number" min="1" placeholder="leave blank to auto-pick" />
+            </label>
+            <button id="pred-run" class="btn" type="button">Predict Next</button>
+          </div>
+        </div>
+        <div class="panel-body">
+          <div id="pred-result" class="result">Enter Appliance + Home ID to predict.</div>
+        </div>
+      </section>
+
+      <footer class="footer">
+        <span>Backend: Flask API + matplotlib</span>
+      </footer>
+    </div>
+
+    <script src="{{ url_for('static', filename='app.js') }}"></script>
+  </body>
+</html>
