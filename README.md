@@ -268,5 +268,4 @@ This project demonstrates a complete machine learning lifecycle:
 
 
 
-Tell me what level you want 🔥
 
