@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Smart Energy Dashboard</title>
+<link rel="stylesheet" href="/static/style.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
+<script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+</head>
+
+<body>
+
+<div class="container">
+
+<div class="sidebar">
+<ul>
+<li><a class="active">Dashboard</a></li>
+<li><a>Total Consumption</a></li>
+<li><a>Usage Change</a></li>
+<li><a>Forecast</a></li>
+<li><a>Active Appliances</a></li>
+<li><a>Energy Intensity</a></li>
+<li><a>Carbon Footprint</a></li>
+<li><a>Total Cost</a></li>
+<li><a>Appliance Cost Breakdown</a></li>
+<li><a>Smart Suggestions</a></li>
+</ul>
+</div>
+
+
+<div class="main">
+
+<div class="header">
+<h1>⚡Next-Gen Energy Consumption Monitoring</h1>
+
+<div class="nav-switch">
+<button onclick="prevMode()">◀</button>
+<span id="modeLabel">Daily</span>
+<button onclick="nextMode()">▶</button>
+</div>
+</div>
+
+
+<div class="grid">
+
+<div class="card">
+<h3>Total Consumption</h3>
+<canvas id="donut"></canvas>
+</div>
+
+<div class="card">
+<h3>Usage Change</h3>
+<canvas id="change"></canvas>
+</div>
+
+<div class="card">
+<h3>Forecast</h3>
+<canvas id="forecast"></canvas>
+</div>
+<div class="forecast-info">
+<span class="solid-line"></span> Real Usage &nbsp;&nbsp;&nbsp;
+<span class="dotted-line"></span> Predicted Usage
+</div>
+</div>
+
+
+<div class="grid">
+
+<div class="card">
+<h3>Devices</h3>
+<canvas id="devices"></canvas>
+<h4 id="highestDevice"></h4>
+</div>
+
+<div class="card">
+<h3>Energy Intensity</h3>
+<p>Indicates how much energy is used per month.
+Lower values suggest more efficient energy usage.</p>
+<p>11.54 kWh is relatively low for most household energy usage, but moderate for small devices like lights,Dishwasher,etc</p>
+<h1 id="intensity"></h1>
+</div>
+
+<div class="card"> <h3>Carbon Footprint</h3> <h1 id="carbon">123 kg</h1> <p class="co2">CO₂ Emissions (This Month)</p> <div class="impact-bar"> <div class="impact-fill" style="width: 65%;"></div> </div> <p class="description"> This value estimates the environmental impact of your electricity usage.
+Reducing energy consumption directly lowers your carbon footprint. </p> 
+<p>123 kg of CO₂ this month — typical for an average household.</p>
+</div>
+
+<div class="card">
+<h3>Average Cost(Monthly)</h3>
+<h1 id="cost"></h1>
+</div>
+
+</div>
+
+
+<div class="card">
+<h3>Appliance Cost Breakdown(Yearly)</h3>
+<ul id="costList"></ul>
+</div>
+
+<div class="card">
+<h3>Smart Suggestions</h3>
+<ul id="suggestions"></ul>
+</div>
+
+</div>
+</div>
+
+<script src="/static/script.js"></script>
+</body>
+</html>
