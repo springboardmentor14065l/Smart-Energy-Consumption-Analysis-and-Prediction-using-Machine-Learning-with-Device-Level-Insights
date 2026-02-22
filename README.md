@@ -2,10 +2,9 @@
 # 📌 Smart Home Energy Consumption Prediction
 
 <img width="749" height="299" alt="image" src="https://github.com/user-attachments/assets/2e764280-90e3-48e7-affe-b7ce89175e10" />
-<img width="749" height="299" alt="image" src="https://github.com/user-attachments/assets/2e764280-90e3-48e7-affe-b7ce89175e10" />
 
 <img width="753" height="352" alt="image" src="https://github.com/user-attachments/assets/3e9f1ea1-fb95-46a9-952d-98ccc9c982cf" />
-<img width="753" height="352" alt="image" src="https://github.com/user-attachments/assets/3e9f1ea1-fb95-46a9-952d-98ccc9c982cf" />
+
 
 ## 📖 Overview
 
