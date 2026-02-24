@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Energy Dashboard</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .glass {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+    </style>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        dark: '#0f172a',
+                        primary: '#3b82f6',
+                        accent: '#8b5cf6',
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-dark text-white min-h-screen flex flex-col">
+
+    <!-- Navbar -->
+    <nav class="border-b border-white/10 glass sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center gap-2">
+                    <div class="w-8 h-8 rounded bg-gradient-to-br from-primary to-accent flex items-center justify-center">
+                        <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                    </div>
+                    <span class="font-bold text-xl tracking-tight">EcoDash <span class="text-primary font-light">AI</span></span>
+                </div>
+                <div class="text-sm text-gray-400">LSTM Model Status: <span id="model-status" class="text-emerald-400 font-medium">Active</span></div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="flex-grow p-6">
+        <div class="max-w-7xl mx-auto space-y-6">
+            
+            <!-- Header Section -->
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div>
+                    <h1 class="text-2xl font-bold">Energy Consumption Overview</h1>
+                    <p class="text-gray-400">Real-time forecasts vs historical data</p>
+                </div>
+                <div class="flex gap-2">
+                    <button class="px-4 py-2 bg-white/5 hover:bg-white/10 rounded-lg text-sm transition ring-1 ring-white/10">Daily</button>
+                    <button class="px-4 py-2 bg-primary hover:bg-blue-600 rounded-lg text-sm transition shadow-lg shadow-blue-500/20">Weekly</button>
+                    <button class="px-4 py-2 bg-white/5 hover:bg-white/10 rounded-lg text-sm transition ring-1 ring-white/10">Monthly</button>
+                </div>
+            </div>
+
+            <!-- Stats Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4" id="stats-container">
+                <!-- Stat Card 1 -->
+                <div class="glass rounded-xl p-5 relative overflow-hidden group">
+                    <div class="absolute -right-4 -top-4 w-24 h-24 bg-primary/20 rounded-full blur-2xl group-hover:bg-primary/30 transition"></div>
+                    <p class="text-gray-400 text-sm font-medium mb-1">Avg Actual Consumption</p>
+                    <h3 class="text-3xl font-bold" id="stat-avg-actual">--</h3>
+                    <span class="text-xs text-gray-500">kWh</span>
+                </div>
+                <!-- Stat Card 2 -->
+                <div class="glass rounded-xl p-5 relative overflow-hidden group">
+                    <div class="absolute -right-4 -top-4 w-24 h-24 bg-accent/20 rounded-full blur-2xl group-hover:bg-accent/30 transition"></div>
+                    <p class="text-gray-400 text-sm font-medium mb-1">Avg Predicted Consumption</p>
+                    <h3 class="text-3xl font-bold" id="stat-avg-predicted">--</h3>
+                    <span class="text-xs text-gray-500">kWh</span>
+                </div>
+                <!-- Stat Card 3 -->
+                <div class="glass rounded-xl p-5 relative overflow-hidden group">
+                    <div class="absolute -right-4 -top-4 w-24 h-24 bg-emerald-500/20 rounded-full blur-2xl group-hover:bg-emerald-500/30 transition"></div>
+                    <p class="text-gray-400 text-sm font-medium mb-1">Peak Usage (Actual)</p>
+                    <h3 class="text-3xl font-bold" id="stat-peak">--</h3>
+                    <span class="text-xs text-gray-500">kWh</span>
+                </div>
+                <!-- Stat Card 4 -->
+                <div class="glass rounded-xl p-5 relative overflow-hidden group">
+                    <div class="absolute -right-4 -top-4 w-24 h-24 bg-orange-500/20 rounded-full blur-2xl group-hover:bg-orange-500/30 transition"></div>
+                    <p class="text-gray-400 text-sm font-medium mb-1">Total Readings</p>
+                    <h3 class="text-3xl font-bold" id="stat-count">--</h3>
+                    <span class="text-xs text-gray-500">Datapoints</span>
+                </div>
+            </div>
+
+            <!-- Main Chart -->
+            <div class="glass rounded-xl p-6 ring-1 ring-white/10">
+                <div class="flex items-center justify-between mb-6">
+                    <h3 class="font-semibold text-lg">Forecast Visualization</h3>
+                    <div class="flex items-center gap-2">
+                        <span class="w-2 h-2 rounded-full bg-primary/50"></span>
+                        <span class="text-xs text-gray-400">Live Updates</span>
+                    </div>
+                </div>
+                <div class="relative h-96 w-full">
+                    <canvas id="energyChart"></canvas>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-white/10 py-6 mt-12 bg-black/20">
+        <div class="max-w-7xl mx-auto px-6 text-center text-sm text-gray-500">
+            <p>&copy; 2026 Smart Energy AI. Powered by Flask & TensorFlow.</p>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="{{ url_for('static', filename='js/charts.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>

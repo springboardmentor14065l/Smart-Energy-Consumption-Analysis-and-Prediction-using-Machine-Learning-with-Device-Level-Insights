@@ -1,0 +1,2 @@
+Best LSTM Model RMSE: 6.3386
+Best Hyperparameters: {'units': 32, 'epochs': 20, 'batch_size': 32}
