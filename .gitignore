@@ -159,3 +159,6 @@ Thumbs.db
 
 # VS Code
 .vscode/
+
+# Virtual Environments
+infosys_internship/

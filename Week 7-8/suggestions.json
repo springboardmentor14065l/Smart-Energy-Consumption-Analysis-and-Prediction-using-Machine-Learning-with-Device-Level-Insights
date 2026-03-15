@@ -1,0 +1,41 @@
+{
+    "general": [
+        "Unplug devices that aren't in use to avoid phantom energy drain.",
+        "Switch to LED bulbs to reduce lighting energy consumption by up to 75%.",
+        "Wash clothes in cold water to save on water heating costs.",
+        "Use a smart power strip to automatically turn off peripheral devices.",
+        "Properly insulate your home to maintain temperature and reduce HVAC usage."
+    ],
+    "appliances": {
+        "Air Conditioning": [
+            "Set your thermostat a few degrees higher in summer to save on AC costs.",
+            "Clean or replace AC filters monthly to improve efficiency.",
+            "Use ceiling fans to circulate air and reduce the load on your AC."
+        ],
+        "Lighting": [
+            "Turn off lights in rooms that are not in use.",
+            "Maxmize natural light during the day by opening curtains.",
+            "Consider installing motion sensors for outdoor lighting."
+        ],
+        "Heating": [
+            "Set your thermostat a few degrees lower in winter.",
+            "Seal drafts around windows and doors to keep the heat in.",
+            "Wear warmer clothes indoors to rely less on the heater."
+        ],
+        "Water Heater": [
+            "Lower the temperature setting on your water heater to 120°F (49°C).",
+            "Take shorter showers to reduce hot water usage.",
+            "Fix leaky faucets to prevent water and energy waste."
+        ],
+        "Laundry": [
+            "Air dry clothes when possible instead of using a dryer.",
+            "Only run full loads of laundry to maximize efficiency.",
+            "Clean the dryer lint filter after every use."
+        ]
+    },
+    "high_usage": [
+        "Your energy consumption is higher than average today. Consider turning off non-essential devices.",
+        "Peak hours are approaching. Try to shift heavy appliance usage to off-peak times.",
+        "Consolidate your tasks to minimize the time appliances are running."
+    ]
+}

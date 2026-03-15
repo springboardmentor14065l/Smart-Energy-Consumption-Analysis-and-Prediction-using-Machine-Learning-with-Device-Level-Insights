@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Energy - Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <div>
+                <h1>Energy Analytics Pro</h1>
+                <p style="color: var(--text-dim)">Smart Consumption Monitoring & ML Forecasting</p>
+            </div>
+            <div class="header-controls">
+                <button class="profile-btn" onclick="openProfile()">Profile</button>
+            </div>
+        </header>
+
+        <div class="dashboard-grid">
+            <!-- 1. Energy Personality Card -->
+            <div class="card stat-card persona-card">
+                <h3>Energy Personality</h3>
+                <div class="persona-display" id="persona-type">--</div>
+                <div style="font-size: 0.9rem; margin-top: 5px; color: var(--text-dim)">Efficiency Score: <span
+                        id="efficiency-score" style="color: var(--primary-color); font-weight: bold;">--</span>/100
+                </div>
+                <ul id="persona-characteristics" class="persona-characteristics"></ul>
+                <div
+                    style="font-size: 0.8rem; margin-top: 10px; color: var(--text-dim); text-align: left; width: 100%;">
+                    <strong>Priority Order:</strong>
+                    <ol id="persona-priority"
+                        style="padding-left: 1.2rem; margin-top: 5px; color: var(--primary-color)"></ol>
+                </div>
+            </div>
+
+            <!-- (Goal Tracker Removed) -->
+
+            <!-- 3. Real-Life Bill Estimation -->
+            <div class="card bill-card">
+                <h3>Bill Estimation</h3>
+                <div id="estimated-bill" class="stat-value">--</div>
+                <p style="color: var(--text-dim)">Projected Monthly Bill</p>
+                <div id="bill-breakdown" style="font-size: 0.9rem; margin-top: 1rem; text-align: left;">
+                    <!-- Breakdown items -->
+                </div>
+            </div>
+
+            <!-- Prediction Box (Old but integrated) -->
+            <div class="card stat-card">
+                <h3>Next Hour Forecast</h3>
+                <div class="prediction-box">
+                    <div id="prediction-value" class="stat-value" style="color: var(--accent); font-size: 2.5rem;">--
+                    </div>
+                    <p id="prediction-impact" style="color: var(--text-dim); font-size: 0.9rem;">--</p>
+                </div>
+            </div>
+
+            <!-- Charts -->
+            <div class="card interactive-chart-card wide">
+                <h3>Usage Trends</h3>
+                <div class="chart-wrapper">
+                    <canvas id="hourlyChart"></canvas>
+                </div>
+            </div>
+
+            <div class="card interactive-chart-card">
+                <h3>Device Energy Mix</h3>
+                <div class="chart-wrapper">
+                    <canvas id="deviceChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Smart Suggestions (Behavioral Alerts) -->
+            <div class="card suggestions-card full-width">
+                <h3>Personalized Suggestions & Alerts</h3>
+                <div id="alert-box" class="alert-grid hidden"></div>
+                <div id="goal-summary-box" class="goal-summary-box">
+                    <p id="goal-summary-text">Analyzing your energy data based on your goals...</p>
+                </div>
+
+                <div id="suggestions-container" class="suggestions-grid">
+                    <!-- Suggestions will be loaded here -->
+                </div>
+                <!-- Savings Summary Table -->
+                <table class="savings-summary-table">
+                    <thead>
+                        <tr>
+                            <th>Total Potential Savings</th>
+                            <th>Bill Reduction (%)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td id="total-savings-val"
+                                style="color: var(--secondary-color); font-weight: 700; font-size: 1.2rem;">--</td>
+                            <td id="total-savings-percent"
+                                style="color: var(--secondary-color); font-weight: 700; font-size: 1.2rem;">--</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Onboarding Modal -->
+    <div id="onboarding-modal" class="modal {% if is_onboarded %}hidden{% endif %}">
+        <div class="modal-content">
+            <h2>Welcome to Smart Energy Advisor ⚡</h2>
+            <p>Let's personalize your experience. Tell us a bit about your home.</p>
+            <form id="onboarding-form">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Home Name</label>
+                        <input type="text" name="name" placeholder="E.g. My Apartment" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="home_id">Assigned Home Profile</label>
+                        <select id="home_id" name="home_id" required>
+                            <option value="399">Profile 399 (Urban Apartment)</option>
+                            <option value="378">Profile 378 (Suburban Home)</option>
+                            <option value="421">Profile 421 (Smart House)</option>
+                            <option value="204">Profile 204 (Eco-Cottage)</option>
+                            <option value="132">Profile 132 (Large Estate)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>House Size (sq ft)</label>
+                        <input type="number" name="house_size" value="1200">
+                    </div>
+                    <div class="form-group">
+                        <label>Residents</label>
+                        <input type="number" name="residents" value="3">
+                    </div>
+                </div>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Energy Goal</label>
+                        <select name="goal">
+                            <option value="Reduce bill">Reduce bill</option>
+                            <option value="Reduce carbon footprint">Reduce carbon footprint</option>
+                            <option value="Avoid peak charges">Avoid peak charges</option>
+                            <option value="General monitoring">General monitoring</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Lifestyle Pattern (Mostly at home during?)</label>
+                        <select name="lifestyle_pattern">
+                            <option value="Morning">Morning</option>
+                            <option value="Afternoon">Afternoon</option>
+                            <option value="Evening">Evening</option>
+                            <option value="Night">Night</option>
+                            <option value="Mostly at Home">Mostly at Home</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Tariff Type</label>
+                    <select name="tariff_type">
+                        <option value="Fixed rate">Fixed Rate</option>
+                        <option value="Time-of-use">Time-of-Use (Peak/Off-peak)</option>
+                    </select>
+                </div>
+                <button type="submit" class="refresh-btn" style="width: 100%; margin-top: 1rem;">Complete Setup</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+
+</html>
